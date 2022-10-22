@@ -68,7 +68,7 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        return redirect()->route('posts.index', ['posts' => $this->getAllPosts()]);
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -79,6 +79,7 @@ class PostsController extends Controller
      */
     public function show($id)
     {
+
         return view('posts.show', ['id'=>$id]);
     }
 
@@ -102,7 +103,7 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return redirect()->route('posts.index', ['posts' => $this->getAllPosts()]);
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -113,6 +114,6 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        return redirect()->route('posts.index', ['posts' => $this->getAllPosts()]);
+        return redirect()->route('posts.index');
     }
 }
