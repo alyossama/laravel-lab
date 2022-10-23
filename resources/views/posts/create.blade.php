@@ -2,29 +2,50 @@
 @section('title', 'Blog - Create new post')
 @section('content')
     <div class="row justify-content-center align-items-center my-5">
-        <div class="col-6">
-            <form method="POST" action="{{ route('posts.store') }}">
+        <div class="col-4">
+            <form method="POST" action="{{ route('post.store') }}">
+                @method('post')
                 @csrf
                 <div class="mb-3">
                     <p class="h1">Create new post</p>
                 </div>
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" name="title" id="title">
+                    <input type="text"
+                    value="{{old('title')}}"
+                        class="form-control
+                    @error('title')
+                    is-invalid
+                    @enderror"
+                        name="title" id="title">
+                    @error('title')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <input type="text" class="form-control" name="description" id="description">
+                    <textarea type="text"
+                    rows="5"
+                        class="form-control @error('description')
+                    is-invalid
+                    @enderror"
+                        name="description" id="description">{{old('description')}}</textarea>
+                    @error('description')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
-
                 <div class="mb-3">
                     <label for="post-creator" class="form-label">Post Creator</label>
                     <select name="post-creator" class="form-control">
-                        <option value="Aly">Aly</option>
-                        <option value="Ahmed">Ahmed</option>
-                        <option value="Omar">Omar</option>
+                        <option selected disabled>Select an option</option>
+                        @foreach ($users as $user)
+                            <option {{old('post-creator')?'selected':''}} value="{{ $user['id'] }}">{{ $user['name'] }}</option>
+                        @endforeach
                     </select>
+                    @error('post-creator')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>
