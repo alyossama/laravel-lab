@@ -12,7 +12,6 @@
     @endif
     <div class="row justify-content-center align-items-center my-5">
         <div class="col-6">
-            @foreach ($postToEdit as $post)
                 <form method="POST" action="{{ route('post.update', $post->id) }}">
                     @method('put')
                     @csrf
@@ -59,7 +58,6 @@
                             <small class="text-danger">{{ $message }}</small>
                         @enderror
                     </div>
-            @endforeach
             <button type="submit" class="btn btn-warning">Update</button>
             </form>
         </div>

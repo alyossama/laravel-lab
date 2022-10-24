@@ -18,12 +18,16 @@ class PostController extends Controller
      */
     public function index()
     {
-        // $posts=DB::table('posts')->select('posts.id','posts.title','posts.created_at',)
-        $posts = DB::table('posts')
-            ->join('users', 'users.id', '=', 'posts.user_id')
-            ->select('posts.id', 'posts.title', 'posts.created_at', 'users.name')
-            ->orderBy('posts.id')
-            ->paginate(5);
+        // $posts = DB::table('posts')
+        //     ->join('users', 'users.id', '=', 'posts.user_id')
+        //     ->select('posts.id', 'posts.title', 'posts.created_at', 'users.name')
+        //     ->orderBy('posts.id')
+        //     ->paginate(5);
+
+        $posts = Post::paginate(5);
+        // dd($posts);
+        // $posts->created_at = Carbon::hasFormat()
+
         return view('posts.index', ['posts'=>$posts]);
     }
 
@@ -35,6 +39,7 @@ class PostController extends Controller
     public function create()
     {
         $users = User::all();
+
         return view('posts.create', ['users'=>$users]);
     }
 
@@ -46,13 +51,16 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        Post::create([
-            'title' => $request['title'],
-            'description'=>$request['description'],
-            'user_id'=>$request['post-creator'],
-            'created_at'=>Carbon::now(),
-            'updated_at'=>Carbon::now(),
+        // dd($request->all());
+        $post = Post::create([
+             'title' => $request['title'],
+             'description'=>$request['description'],
+             'user_id'=>$request['post-creator'],
+             // 'created_at'=>Carbon::now(),
+             // 'updated_at'=>Carbon::now(),
     ]);
+
+        $post->replicate();
 
         return to_route('post.index')->with(['success'=>'New post added successfully!']);
     }
@@ -65,12 +73,16 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $post = DB::table('posts')
-        ->join('users', 'users.id', '=', 'posts.user_id')
-        ->select('posts.id', 'posts.title', 'posts.description','posts.created_at', 'users.name','users.email')
-        ->where('posts.id', '=', $id)
-        ->get();
-        return view('posts.show', ['postToShow'=>$post]);
+        // $post = DB::table('posts')
+        // ->join('users', 'users.id', '=', 'posts.user_id')
+        // ->select('posts.id', 'posts.title', 'posts.description', 'posts.created_at', 'users.name', 'users.email')
+        // ->where('posts.id', '=', $id)
+        // ->get();
+
+
+        $post = Post::find($id);
+
+        return view('posts.show', ['post'=>$post]);
     }
 
     /**
@@ -81,14 +93,16 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        $post = DB::table('posts')
-        ->join('users', 'users.id', '=', 'posts.user_id')
-        ->select('posts.id', 'posts.title', 'posts.description', 'posts.user_id', 'users.name')
-        ->where('posts.id', '=', $id)
-        ->get();
+        // $post = DB::table('posts')
+        // ->join('users', 'users.id', '=', 'posts.user_id')
+        // ->select('posts.id', 'posts.title', 'posts.description', 'posts.user_id', 'users.name')
+        // ->where('posts.id', '=', $id)
+        // ->get();
+
+        $post = Post::find($id);
 
         $users = User::all();
-        return view('posts.edit', ['postToEdit'=>$post,'users'=>$users]);
+        return view('posts.edit', compact('users', 'post'));
     }
 
     /**
@@ -106,6 +120,8 @@ class PostController extends Controller
         $postToUpdate->user_id = $request['post-creator'];
         $postToUpdate->updated_at=Carbon::now();
 
+        $postToUpdate->replicate();
+        
         $postToUpdate->save();
 
         return to_route('post.edit', $id)->with(['success'=>'Post updated successfully!']);
