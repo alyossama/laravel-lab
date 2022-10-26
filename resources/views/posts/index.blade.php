@@ -23,22 +23,23 @@
             </div>
         </div>
     </div>
-{{-- @dd($posts) --}}
+
     <div class="row justify-content-center">
         <div class="col-10">
             <table class="table table-hover mt-4 text-center">
-                <thead class="bg-info">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Slug</th>
-                        <th scope="col">Posted By</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Actions</th>
+                <thead class="bg-primary border-none">
+                    <tr class="text-white">
+                        <th class="rounded-pill" scope="col">#</th>
+                        <th class="rounded-pill" scope="col">Title</th>
+                        <th class="rounded-pill" scope="col">Slug</th>
+                        <th class="rounded-pill" scope="col">Posted By</th>
+                        <th class="rounded-pill" scope="col">Created At</th>
+                        <th class="rounded-pill" scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($posts as $post)
+                    {{-- @dd($post->user) --}}
                         <tr>
                             <td>{{ $post->id }}</td>
                             <td>{{ $post->title }}</td>
@@ -49,7 +50,7 @@
                                 <div class="col-4"><a href="{{ route('post.show', $post->id) }}"
                                         class="btn btn-info">View</a></div>
                                 <div class="col-4"><a href="{{ route('post.edit', $post->id) }}"
-                                        class="btn btn-primary">Edit</a></div>
+                                        class="btn btn-warning">Edit</a></div>
                                 <div class="col-4">
                                     <form method="post" action="{{ route('post.destroy', $post->id) }}">
                                         @method('delete')

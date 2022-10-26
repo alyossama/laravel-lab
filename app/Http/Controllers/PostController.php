@@ -6,8 +6,8 @@ use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -82,7 +82,8 @@ class PostController extends Controller
 
         $post = Post::find($id);
 
-        return view('posts.show', ['post'=>$post]);
+
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -121,7 +122,7 @@ class PostController extends Controller
         $postToUpdate->updated_at=Carbon::now();
 
         $postToUpdate->replicate();
-        
+
         $postToUpdate->save();
 
         return to_route('post.edit', $id)->with(['success'=>'Post updated successfully!']);
