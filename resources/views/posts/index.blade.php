@@ -10,7 +10,6 @@
             </div>
         </div>
     @endif
-
     <div class="row justify-content-center align-items-center my-5">
         <div class="col-8">
             <div class="row align-items-center">
@@ -25,7 +24,7 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-10">
+        <div class="col-11">
             <table class="table table-hover mt-4 text-center">
                 <thead class="bg-primary border-none">
                     <tr class="text-white">

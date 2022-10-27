@@ -26,8 +26,7 @@ class PostController extends Controller
 
         $posts = Post::paginate(5);
         // dd($posts);
-        // $posts->created_at = Carbon::hasFormat()
-
+        // $posts->created_at = Carbon::has$Format()
         return view('posts.index', ['posts'=>$posts]);
     }
 
