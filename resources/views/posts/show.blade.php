@@ -77,7 +77,45 @@
                                     </p>
                                 </div>
                                 <div class="row justify-content-end">
-                                    <div class="col-1"><a href="" class="btn btn-outline-warning">Edit</a></div>
+                                    <div class="col-1">
+                                        {{-- Button --}}
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-outline-warning" data-toggle="modal"
+                                            data-target="#editModal">
+                                            Edit
+                                        </button>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="EditCommentModal" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="EditCommentModal">Edit Comment</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('comment.update',$comment->id) }}" method="post" id="edit-comment">
+                                                            @method('put')
+                                                            @csrf
+                                                            <input type="hidden" name="post_id" value={{ $post->id }}>
+                                                            <label for="comment">Comment</label>
+                                                            <textarea class="form-control" name="comment" id="comment" cols="30" rows="5">{{$comment->body}}</textarea>
+
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Close</button>
+                                                        <button type="submit" form="edit-comment" class="btn btn-primary">Save changes</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{-- /Button --}}
                                     <div class="col-2">
                                         <form method="post" action="{{ route('comment.destroy', $comment->id) }}">
                                             @method('delete')
@@ -92,7 +130,6 @@
                     </div>
                 </div>
             @endforeach
-
         </div>
     </div>
     {{-- Write a new comment section --}}
@@ -125,8 +162,4 @@
 
         </div>
     </div>
-    {{-- @foreach ($post->comments as $comment)
-        var_dump($comment->user)
-    @endforeach --}}
-
 @endsection

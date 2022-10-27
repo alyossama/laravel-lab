@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
@@ -33,6 +34,16 @@ class CommentController extends Controller
         $comment->delete();
 
         return redirect()->back()->with(['success'=>'Comment deleted successfully']);
+    }
+    public function update(UpdateCommentRequest $request, $id)
+    {
+        $comment = Comment::find($id);
+        $comment->body = $request['comment'];
+        $comment->post_id = $request['post_id'];
+        $comment->user_id=Auth::id();
+
+        $comment->save();
+        return to_route('post.show',$request['post_id']);
     }
 
 }
