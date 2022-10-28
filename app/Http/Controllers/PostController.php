@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -50,14 +51,19 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        // dd($request->all());
+        $postImage = $request->file('postImage');
+        // dd($request->hasFile('postImage'));
+        $request->hasFile('postImage') ? $postImageName = $postImage->hashName() : null
+        ;
+        // dd($postImageName);
+        $request->hasFile('postImage') ? $postImage->storeAs('images', $postImage->hashName()) : null;
         $post = Post::create([
              'title' => $request['title'],
              'description'=>$request['description'],
              'user_id'=>$request['post-creator'],
-             // 'created_at'=>Carbon::now(),
-             // 'updated_at'=>Carbon::now(),
+             'image'=>($request->hasFile('postImage') ? $postImageName : null)
     ]);
+
 
         $post->replicate();
 
@@ -80,7 +86,6 @@ class PostController extends Controller
 
 
         $post = Post::find($id);
-
 
         return view('posts.show', compact('post'));
     }
@@ -120,6 +125,15 @@ class PostController extends Controller
         $postToUpdate->user_id = $request['post-creator'];
         $postToUpdate->updated_at=Carbon::now();
 
+        if ($request->hasFile('postImage')) {
+            $oldImagePath = "images\\".$postToUpdate->postImage;
+            Storage::delete($oldImagePath);
+
+            $newImage = $request->file('postImage');
+            $newImage->storeAs('images', $newImage->hashName());
+        }
+
+
         $postToUpdate->replicate();
 
         $postToUpdate->save();
@@ -137,6 +151,8 @@ class PostController extends Controller
     {
         $postToBeDeleted = Post::find($id);
 
+        $postImagePath = "images\\".$postToBeDeleted->image;
+        Storage::delete($postImagePath);
 
         $postToBeDeleted->delete();
 

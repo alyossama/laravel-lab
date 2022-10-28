@@ -25,10 +25,14 @@ Auth::routes();
 
 Route::group(['middleware'=>'auth'], function () {
     Route::resource('post', PostController::class);
+
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
     Route::group(['prefix'=>'/comment'], function () {
         Route::post('/', [CommentController::class,'store'])->name('comment.store');
         Route::delete('/{id}', [CommentController::class,'destroy'])->name('comment.destroy');
         Route::put('/{id}', [CommentController::class,'update'])->name('comment.update');
     });
 });
+
+

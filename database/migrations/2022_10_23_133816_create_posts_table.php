@@ -17,9 +17,8 @@ return new class () extends Migration {
             $table->string('title');
             $table->string('slug');
             $table->text('description');
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('user_id');
-            // $table->date('created_at');
-            // $table->date('updated_at');
             $table->timestamps();
             //Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');

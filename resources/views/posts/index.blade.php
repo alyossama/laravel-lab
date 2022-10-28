@@ -44,20 +44,21 @@
                             <td>{{ $post->title }}</td>
                             <td>{{ $post->slug }}</td>
                             <td>{{ $post->user->name }}</td>
-                            <td>{{ $post->created_at->format('Y-m-d') }}</td>
-                            <td>
+                            <td class="col-2">{{ $post->created_at->format('Y-m-d') }}</td>
+                            <td class="col-3">
                                 <div class="row">
-                                    <div class="col-4 @if (auth()->id() != $post->user->id) col-6 @else col-4 @endif"><a
-                                            href="{{ route('post.show', $post->id) }}" class="btn btn-info w-100">View</a></div>
-                                    <div class="col-4 @if (auth()->id() != $post->user->id) d-none @else '' @endif">
-                                        <a href="{{ route('post.edit', $post->id) }}" class="btn btn-warning w-100">Edit</a>
+                                    <div class="@if (auth()->id() != $post->user->id) col-6 @else col-4 @endif"><a
+                                            href="{{ route('post.show', $post->id) }}" class="btn btn-info w-100">View</a>
                                     </div>
-                                    <div class="col-4 @if (auth()->id() != $post->user->id) col-6 @else col-4 @endif">
+                                    <div class=" @if (auth()->id() != $post->user->id) d-none @else col-4 @endif">
+                                        <a href="{{ route('post.edit', $post->id) }}" class="btn btn-warning ">Edit</a>
+                                    </div>
+                                    <div class=" @if (auth()->id() != $post->user->id) col-6 @else col-4 @endif">
                                         <form method="post" action="{{ route('post.destroy', $post->id) }}">
                                             @method('delete')
                                             @csrf
                                             <input type="submit" onclick="return confirm('Are you sure?')"
-                                                class="btn btn-danger w-100" value="Delete">
+                                                class="btn btn-danger w-100 " value="Delete">
                                         </form>
                                     </div>
                                 </div>
