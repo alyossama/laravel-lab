@@ -24,7 +24,7 @@ class PostController extends Controller
         //     ->orderBy('posts.id')
         //     ->paginate(5);
 
-        $posts = Post::paginate(5);
+        $posts = Post::paginate(20);
         // dd($posts);
         // $posts->created_at = Carbon::has$Format()
         return view('posts.index', ['posts'=>$posts]);
