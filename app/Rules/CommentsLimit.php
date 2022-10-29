@@ -2,19 +2,21 @@
 
 namespace App\Rules;
 
+use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Rule;
-
 
 class CommentsLimit implements Rule
 {
+    public $postId;
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($postId)
     {
-
+        $this->postId = $postId;
     }
 
     /**
@@ -26,7 +28,8 @@ class CommentsLimit implements Rule
      */
     public function passes($attribute, $value)
     {
-        return $value < 3;
+        $countUserComments = Post::find($this->postId)->comments()->where('user_id', Auth::id())->count();
+        return ($countUserComments < 3) ? true : false;
     }
 
     /**

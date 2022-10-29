@@ -50,7 +50,7 @@ class PostController extends Controller
         $request->hasFile('postImage') ? $postImageName = $postImage->hashName() : null
         ;
 
-        $request->hasFile('postImage') ? $postImage->storeAs('images', $postImage->hashName()) : null;
+        $request->hasFile('postImage') ? $postImage->storeAs('images/'. Str::slug($request['title']).'/', $postImage->hashName()) : null;
         $post = Post::create([
              'title' => $request['title'],
              'description'=>$request['description'],
@@ -59,7 +59,7 @@ class PostController extends Controller
     ]);
 
 
-        $post->replicate();
+        // $post->replicate();
 
         return to_route('post.index')->with(['success'=>'New post added successfully!']);
     }
@@ -86,7 +86,6 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        // dd($post);
         $users = User::all();
         return view('posts.edit', compact('users', 'post'));
     }
@@ -100,27 +99,27 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, $id)
     {
-
         $post = Post::find($id);
-
-        $post->title = $request->title;
-        $post->slug = Str::slug($request->title) ;
-        $post->description = $request->description;
-        $post->user_id = $request->input('post-creator');
-        $post->updated_at = Carbon::now();
 
         if ($request->hasFile('postImage')) {
             //get the current image & delete it
-            $currentImage = $post->image;
-            $currentImagePath = "images\\".$currentImage;
-            Storage::delete($currentImagePath);
+
+            $currentImageDirectory = "images/$post->slug/";
+            Storage::deleteDirectory($currentImageDirectory);
 
             // assign new image
             $post->image = $request->postImage->hashName();
-
+            $post->slug = Str::slug($request->title) ;
             $newImage = $request->file('postImage');
-            $newImage->storeAs('images', $newImage->hashName());
+            $newImage->storeAs("images/$post->slug/", $newImage->hashName());
         }
+
+        $post->title = $request->title;
+        // $post->slug = Str::slug($request->title) ;
+        $post->description = $request->description;
+        $post->user_id = $request->input('post-creator');
+
+
 
         $post->save();
 
@@ -137,8 +136,11 @@ class PostController extends Controller
     {
         $postToBeDeleted = Post::find($id);
 
-        $postImagePath = "images\\".$postToBeDeleted->image;
-        Storage::delete($postImagePath);
+        // $postImagePath = "images/$postToBeDeleted->slug/".$postToBeDeleted->image;
+        $postImageDirectory = "images/$postToBeDeleted->slug/";
+        // dd($postImageDirectory);
+        // Storage::delete($postImageDirectory);
+        Storage::deleteDirectory($postImageDirectory);
 
         $postToBeDeleted->delete();
 

@@ -25,11 +25,12 @@ class StoreCommentRequest extends FormRequest
      */
     public function rules()
     {
+        // dd($this->all());
         // $user = Auth::user();
         // dd($user,$user->comment);
         return [
-            'comment'=>'required',
-            'user_comment_count'=>new CommentsLimit()
+            'comment'=>['required',
+            new CommentsLimit($this->post_id)]
         ];
     }
 }

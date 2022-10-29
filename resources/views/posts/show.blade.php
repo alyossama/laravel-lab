@@ -45,13 +45,16 @@
 
                 <div class="row">
                     <div class="card-body col-9">
-                        <h5 class="card-title bg-light">Title</h5>
-                        <p class="card-text">{{ $post->title }}</p>
-                        <h5 class="card-title bg-light">Description</h5>
-                        <p class="card-text">{{ $post->description }}</p>
+                        <div class="p-3">
+                            <h5 class="card-title bg-light">Title</h5>
+                            <p class="card-text">{{ $post->title }}</p>
+                            <h5 class="card-title bg-light">Description</h5>
+                            <p class="card-text">{{ $post->description }}</p>
+                        </div>
                     </div>
                     <div class="col-3">
-                        <img src="{{ asset("images/$post->image") }}" alt="Post Has no Image" width="100%" height="100%">
+                        <img src="{{ asset("images/$post->slug/$post->image") }}" alt="Post Has no Image" width="100%"
+                            height="100%">
                     </div>
                 </div>
 
@@ -89,12 +92,12 @@
                                         {{-- Button --}}
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-outline-warning" data-toggle="modal"
-                                            data-target="#editModal">
+                                            data-target="#editModal{{ $comment->id }}">
                                             Edit
                                         </button>
                                         <!-- Modal -->
-                                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog"
-                                            aria-labelledby="EditCommentModal" aria-hidden="true">
+                                        <div class="modal fade" id="editModal{{ $comment->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="EditCommentModal" aria-hidden="true">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -110,10 +113,8 @@
                                                             @method('put')
                                                             @csrf
                                                             <input type="hidden" name="post_id" value={{ $post->id }}>
-                                                            {{-- <input type="hidden" name="user_id" value={{ auth()->id() }}> --}}
                                                             <label for="comment">Comment</label>
                                                             <textarea class="form-control" name="comment" id="comment" cols="30" rows="5">{{ $comment->body }}</textarea>
-
                                                         </form>
                                                     </div>
                                                     <div class="modal-footer">
@@ -158,6 +159,9 @@
                     </div>
                 </div>
             @endif
+            @error('comment')
+                <div class="alert alert-danger col-12 ">{{ $message }}</div>
+            @enderror
             <div class="card card-body bg-light">
                 <h5 class="card-title ">Leave a comment</h5>
                 <form action="{{ route('comment.store') }}" method="post">
@@ -167,7 +171,9 @@
                     {{-- <input type="hidden" name="user_comment_count" value={{ $userCommentCount }}> --}}
                     <label for="comment">Comment</label>
                     <textarea class="form-control" name="comment" id="comment" cols="30" rows="5"></textarea>
+
                     <input type="submit" class="btn btn-outline-primary mt-3" value="submit">
+
                 </form>
             </div>
 
