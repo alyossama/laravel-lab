@@ -35,7 +35,7 @@
             </div>
         </div>
     </div>
-    {{-- @dd($post) --}}
+
     <div class="row justify-content-center align-items-center">
         <div class="col-8">
             <div class="card shadow-lg">
@@ -51,7 +51,7 @@
                         <p class="card-text">{{ $post->description }}</p>
                     </div>
                     <div class="col-3">
-                        <img src="{{ asset("images/$post->image") }}"  alt="Post Has no Image" width="100%" height="100%">
+                        <img src="{{ asset("images/$post->image") }}" alt="Post Has no Image" width="100%" height="100%">
                     </div>
                 </div>
 

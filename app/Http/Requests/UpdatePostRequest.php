@@ -32,7 +32,8 @@ class UpdatePostRequest extends FormRequest
         return [
             'title'=>"required|min:3|unique:posts,title,{$this->post}",
             'description'=>'required|min:10',
-            'post-creator'=>'required|exists:users,id'
+            'post-creator'=>'required|exists:users,id',
+            'postImage'=>'image|mimes:jpg,png,jpeg',
         ];
     }
 }

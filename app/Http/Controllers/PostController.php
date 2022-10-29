@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\Post;
+use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -19,15 +20,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        // $posts = DB::table('posts')
-        //     ->join('users', 'users.id', '=', 'posts.user_id')
-        //     ->select('posts.id', 'posts.title', 'posts.created_at', 'users.name')
-        //     ->orderBy('posts.id')
-        //     ->paginate(5);
-
         $posts = Post::paginate(10);
-        // dd($posts);
-        // $posts->created_at = Carbon::has$Format()
+
         return view('posts.index', ['posts'=>$posts]);
     }
 
@@ -52,10 +46,10 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $postImage = $request->file('postImage');
-        // dd($request->hasFile('postImage'));
+
         $request->hasFile('postImage') ? $postImageName = $postImage->hashName() : null
         ;
-        // dd($postImageName);
+
         $request->hasFile('postImage') ? $postImage->storeAs('images', $postImage->hashName()) : null;
         $post = Post::create([
              'title' => $request['title'],
@@ -78,13 +72,6 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        // $post = DB::table('posts')
-        // ->join('users', 'users.id', '=', 'posts.user_id')
-        // ->select('posts.id', 'posts.title', 'posts.description', 'posts.created_at', 'users.name', 'users.email')
-        // ->where('posts.id', '=', $id)
-        // ->get();
-
-
         $post = Post::find($id);
 
         return view('posts.show', compact('post'));
@@ -98,14 +85,8 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        // $post = DB::table('posts')
-        // ->join('users', 'users.id', '=', 'posts.user_id')
-        // ->select('posts.id', 'posts.title', 'posts.description', 'posts.user_id', 'users.name')
-        // ->where('posts.id', '=', $id)
-        // ->get();
-
         $post = Post::find($id);
-
+        // dd($post);
         $users = User::all();
         return view('posts.edit', compact('users', 'post'));
     }
@@ -119,24 +100,29 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, $id)
     {
-        $postToUpdate= Post::find($id);
-        $postToUpdate->title =$request['title'];
-        $postToUpdate->description =$request['description'];
-        $postToUpdate->user_id = $request['post-creator'];
-        $postToUpdate->updated_at=Carbon::now();
+
+        $post = Post::find($id);
+
+        $post->title = $request->title;
+        $post->slug = Str::slug($request->title) ;
+        $post->description = $request->description;
+        $post->user_id = $request->input('post-creator');
+        $post->updated_at = Carbon::now();
 
         if ($request->hasFile('postImage')) {
-            $oldImagePath = "images\\".$postToUpdate->postImage;
-            Storage::delete($oldImagePath);
+            //get the current image & delete it
+            $currentImage = $post->image;
+            $currentImagePath = "images\\".$currentImage;
+            Storage::delete($currentImagePath);
+
+            // assign new image
+            $post->image = $request->postImage->hashName();
 
             $newImage = $request->file('postImage');
             $newImage->storeAs('images', $newImage->hashName());
         }
 
-
-        $postToUpdate->replicate();
-
-        $postToUpdate->save();
+        $post->save();
 
         return to_route('post.edit', $id)->with(['success'=>'Post updated successfully!']);
     }

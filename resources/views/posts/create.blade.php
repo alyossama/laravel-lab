@@ -37,6 +37,9 @@
                     <label for="postImage" class="form-label">Post image</label>
                     <input class="form-control" type="file" name="postImage" id="postImage">
                 </div>
+                @error('postImage')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
                 <div class="mb-3">
                     <label for="post-creator" class="form-label">Post Creator</label>
                     <select name="post-creator" class="form-control">

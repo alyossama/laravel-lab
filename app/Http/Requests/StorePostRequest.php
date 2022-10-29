@@ -26,7 +26,8 @@ class StorePostRequest extends FormRequest
         return [
             'title'=>'required|min:3|unique:posts',
             'description'=>'required|min:10',
-            'post-creator'=>'required|exists:users,id'
+            'post-creator'=>'required|exists:users,id',
+            'postImage'=>'image|mimes:jpg,png,jpeg',
         ];
     }
 
